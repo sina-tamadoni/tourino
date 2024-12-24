@@ -1,4 +1,5 @@
-import React from "react";
+import AddToCartButton from "@/components/partials/AddToCartButton";
+import ModalContainer from "@/components/partials/ModalContainer";
 
 export const revalidate = 60 * 60; // 1hour
 export async function generateStaticParams() {
@@ -35,6 +36,7 @@ export default async function TourDetails({ params }) {
         <span>قیمت</span>
         <span>{selectedTour.price}</span>
       </div>
+      <AddToCartButton tourId={selectedTour.id} price={selectedTour.price} title={selectedTour.title}/>
     </div>
   );
 }

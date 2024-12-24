@@ -16,7 +16,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../configs/api";
-import { setCookie } from "../utils/cookie";
+import { getCookie, setCookie } from "../utils/cookie";
 
 const useSendOtp = () => {
   const mutationFn = (data) => api.post("auth/send-otp", data);
@@ -41,10 +41,25 @@ const useUpdatePersonalInfo = () => {
   const onSuccess = () => queryClient.invalidateQueries({ queryKey });
   return useMutation({ mutationFn, onSuccess });
 };
+const useAddToCart = () => {
+  const mutationFn = (data) => api.put(`basket/${data}`);
+  return useMutation({ mutationFn });
+};
+
+const useOrder = () => {
+  const queryClient = useQueryClient();
+  const queryKey = ["cart"];
+
+  const mutationFn = (data) => api.post("order", data);
+  const onSuccess = () => queryClient.invalidateQueries({ queryKey });
+
+  return useMutation({ mutationFn, onSuccess });
+};
+
 export {
   useSendOtp,
   useCheckOtp,
-  useUpdateEmail,
   useUpdatePersonalInfo,
-  useUpdateBankAccount,
+  useAddToCart,
+  useOrder,
 };

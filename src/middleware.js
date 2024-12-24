@@ -15,5 +15,5 @@ export function middleware(req) {
 
 // تنظیم مسیرهایی که باید Middleware اجرا شود
 export const config = {
-  matcher: ["/profile/:path*"], // مسیرهایی که نیاز به احراز هویت دارند
+  matcher: ["/profile/:path*", "/cart/:path*"], // مسیرهایی که نیاز به احراز هویت دارند
 };

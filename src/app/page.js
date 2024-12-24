@@ -7,6 +7,7 @@ import SearchForm from "@/components/templates/SearchForm";
 import api from "@/core/configs/api";
 import { useGetProfile } from "@/core/services/queries";
 import { flatten } from "flat";
+import Link from "next/link";
 
 export default async function Home({ searchParams }) {
   // console.log(searchParams);
@@ -37,7 +38,8 @@ export default async function Home({ searchParams }) {
 
   return (
     <div>
-      <SearchForm pathname="/"/>
+      <SearchForm pathname="/" />
+      <Link href="/tours">همه تورها</Link>
       <ul>
         {tours.slice(0, 6).map((tour) => (
           <li key={tour.id}>{tour.title}</li>

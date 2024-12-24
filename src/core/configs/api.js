@@ -16,9 +16,32 @@ api.interceptors.request.use(
   },
   (error) => {
     if (error === null || error === undefined) {
-      throw new Error("interceptors.request.use: error is null or undefined");
+      throw new Error("error is null or undefined");
     }
     return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const orginialRequest = error.config;
+    if (error.response.status === 401 && !orginialRequest._retry) {
+      orginialRequest._retry = true;
+
+      const res = await getNewTokens();
+      if (res?.response?.status === 201) {
+        setCookie("accessToken", res?.response?.data.accessToken, 30);
+        setCookie("refreshToken", res?.response?.data.refreshToken, 360);
+        return api(orginialRequest);
+      } else {
+        setCookie("accessToken", "", 0);
+        setCookie("refreshToken", "", 0);
+      }
+    }
+    return Promise.reject(error.response.data);
   }
 );
 
@@ -27,50 +50,27 @@ api.interceptors.request.use(
 //     return response;
 //   },
 //   async (error) => {
-//     const orginialRequest = error.config;
-//     if (error.response.status === 401 && !orginialRequest._retry) {
-//       orginialRequest._retry = true;
-
-//       const res = await getNewTokens();
-//       if (res?.response?.status === 201) {
-//         setCookie("accessToken", res?.response?.data.accessToken, 30);
-//         setCookie("refreshToken", res?.response?.data.refreshToken, 360);
-//         return api(orginialRequest);
-//       } else {
-//         setCookie("accessToken", "", 0);
-//         setCookie("refreshToken", "", 0);
-//       }
+//     if (!error || !error.response) {
+//       throw error;
 //     }
-//     return Promise.reject(error.response.data);
+
+//     const { config } = error;
+
+//     try {
+//       const {
+//         data: { accessToken },
+//         status: newStatus,
+//       } = await getNewTokens();
+//       if (newStatus === 200 && accessToken) {
+//         setCookie("accessToken", accessToken, 30);
+//         return await api(config);
+//       }
+//     } catch (tokenError) {
+//       throw tokenError;
+//     }
+//     throw error;
 //   }
 // );
-
-api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error) => {
-    if (!error || !error.response) {
-      throw error;
-    }
-
-    const { config } = error;
-
-    try {
-      const {
-        data: { accessToken },
-        status: newStatus,
-      } = await getNewTokens();
-      if (newStatus === 200 && accessToken) {
-        setCookie("accessToken", accessToken, 30);
-        return await api(config);
-      }
-    } catch (tokenError) {
-      throw tokenError;
-    }
-    throw error;
-  }
-);
 
 export default api;
 
