@@ -41,9 +41,11 @@ export default async function Home({ searchParams }) {
       <SearchForm pathname="/" />
       <Link href="/tours">همه تورها</Link>
       <ul>
-        {tours.slice(0, 6).map((tour) => (
-          <li key={tour.id}>{tour.title}</li>
-        ))}
+        {tours.length === 0 ? (
+          <div>موردی یافت نشد</div>
+        ) : (
+          tours.slice(0, 6).map((tour) => <li key={tour.id}>{tour.title}</li>)
+        )}
       </ul>
     </div>
   );

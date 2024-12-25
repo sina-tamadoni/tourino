@@ -8,7 +8,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import api from "../configs/api";
-
 export function useUserProfile() {
   const queryKey = ["userProfile"];
   const queryFn = () => api.get("user/profile").then((res) => res || false);

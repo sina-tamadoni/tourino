@@ -1,5 +1,7 @@
+import { emailSchema } from "@/core/schemas";
 import { useUpdatePersonalInfo } from "@/core/services/mutations";
 import { convertNum } from "@/core/utils/convertNumToPersian";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -9,7 +11,7 @@ function EditAccountInfo({ user, setPage }) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({ resolver: yupResolver(emailSchema) });
   const onSubmit = (data) => {
     if (isPending) return;
 
@@ -44,7 +46,6 @@ function EditAccountInfo({ user, setPage }) {
             placeholder="آدرس ایمیل"
             className="flex-1 rounded-[5px] border border-1 border-[#00000080] w-[186px] h-10 p-2 text-sm font-[400] font-[yekan] leading-[21.7px]"
           />
-
           <button
             type="submit"
             className="w-[93px] h-10 p-2 rounded-[5px] flex justify-center items-center bg-[#2BA745] text-white text-base font-[600] font-[yekan] leading-[24.8px]"
@@ -53,6 +54,7 @@ function EditAccountInfo({ user, setPage }) {
           </button>
         </div>
       </div>
+      {!!errors?.email && <span className="">{errors?.email?.message}</span>}
     </form>
   );
 }

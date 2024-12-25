@@ -2,14 +2,17 @@ import { useUpdatePersonalInfo } from "@/core/services/mutations";
 import React from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-
+import { yupResolver } from "@hookform/resolvers/yup";
+import { bankAcountSchema } from "@/core/schemas";
 function EditBankInfo({ user, setPage }) {
   const { mutate, isPending } = useUpdatePersonalInfo();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(bankAcountSchema),
+  });
 
   const submitHandler = (data) => {
     if (isPending) return;
@@ -40,19 +43,27 @@ function EditBankInfo({ user, setPage }) {
           placeholder="شماره کارت"
           className="px-2 focus:outline-none focus:ring-2 focus:ring-custom-green focus:border-custom-green"
         />
+        {!!errors?.debitCard_code && (
+          <span className="">{errors?.debitCard_code?.message}</span>
+        )}
         <input
           defaultValue={user?.data?.payment?.accountIdentifier}
           {...register("accountIdentifier")}
           placeholder="شماره حساب"
           className="px-2 focus:outline-none focus:ring-2 focus:ring-custom-green focus:border-custom-green"
         />
-
+        {!!errors?.accountIdentifier && (
+          <span className="">{errors?.accountIdentifier?.message}</span>
+        )}
         <input
           defaultValue={user?.data?.payment?.shaba_code}
           {...register("shaba_code")}
           placeholder="شماره شبا"
           className="px-2 focus:outline-none focus:ring-2 focus:ring-custom-green focus:border-custom-green"
         />
+        {!!errors?.shaba_code && (
+          <span className="">{errors?.shaba_code?.message}</span>
+        )}
       </div>
       <div className="flex justify-between ite gap-4 *:flex-1 *:p-2 *:rounded-[5px] text-base font-[yekan] font-[600] leading-[24.8px]">
         <button type="submit" className="bg-custom-green text-white">

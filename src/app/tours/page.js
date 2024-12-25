@@ -24,11 +24,15 @@ export default async function Tours({ searchParams }) {
     <div>
       <SearchForm pathname="/tours" />
       <ul>
-        {tours.map((tour) => (
-          <Link key={tour.id} href={`tours/${tour.id}`}>
-            <li>{tour.title}</li>
-          </Link>
-        ))}
+        {tours.length === 0 ? (
+          <div>موردی یافت نشد</div>
+        ) : (
+          tours.map((tour) => (
+            <Link key={tour.id} href={`tours/${tour.id}`}>
+              <li>{tour.title}</li>
+            </Link>
+          ))
+        )}
       </ul>
     </div>
   );

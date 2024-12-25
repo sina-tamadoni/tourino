@@ -1,4 +1,6 @@
+import { personalInfoSchema } from "@/core/schemas";
 import { useUpdatePersonalInfo } from "@/core/services/mutations";
+import { yupResolver } from "@hookform/resolvers/yup";
 import Image from "next/image";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -9,9 +11,11 @@ function EditPersonalInfo({ user, setPage }) {
   const {
     register,
     handleSubmit,
-    setValue,
+    watch,
     formState: { errors },
-  } = useForm();
+  } = useForm({ resolver: yupResolver(personalInfoSchema) });
+  const birthDate = watch("birthDate", user?.data?.birthDate);
+
 
   const onSubmit = (data) => {
     if (isPending) return;
@@ -39,6 +43,10 @@ function EditPersonalInfo({ user, setPage }) {
           placeholder="نام و نام خانوادگی"
           className="px-2 focus:outline-none focus:ring-2 focus:ring-custom-green focus:border-custom-green"
         />
+        {!!errors?.firstName && (
+          <span className="">{errors?.firstName?.message}</span>
+        )}
+
         <input
           type="number"
           defaultValue={user?.data?.nationalCode}
@@ -46,6 +54,10 @@ function EditPersonalInfo({ user, setPage }) {
           placeholder="کد ملی"
           className="px-2 focus:outline-none focus:ring-2 focus:ring-custom-green focus:border-custom-green"
         />
+        {!!errors?.nationalCode && (
+          <span className="">{errors?.nationalCode?.message}</span>
+        )}
+
         <div className="relative overflow-hidden">
           <div className="flex justify-start gap-2 items-center p-2 w-full">
             <Image
@@ -54,14 +66,18 @@ function EditPersonalInfo({ user, setPage }) {
               height={14}
               alt="calender"
             />
-            <span>{user?.data?.birthDate || "تاریخ تولد"}</span>
+            <span>{birthDate || "تاریخ تولد"}</span>
+            {/* <span>{ "تاریخ تولد"}</span> */}
           </div>
           <input
             type="date"
-            defaultValue={user?.data?.birthDate}
+            defaultValue={user?.data?.birthDate || "تاریخ تولد"}
             {...register("birthDate")}
             className="absolute w-full h-full opacity-0 top-0 right-0 cursor-pointer px-2 focus:outline-none focus:ring-2 focus:ring-custom-green focus:border-custom-green"
           />
+          {!!errors?.birthDate && (
+            <span className="">{errors?.birthDate?.message}</span>
+          )}
         </div>
         <div className="relative ">
           <label
@@ -76,9 +92,12 @@ function EditPersonalInfo({ user, setPage }) {
             id="gender"
             className="w-full h-full cursor-pointer text-[#282828] border-none outline-none rounded-[5px] px-2 focus:outline-none focus:ring-2 focus:ring-custom-green focus:border-custom-green"
           >
-            <option value="مرد">مرد</option>
+            <option value="male">مرد</option>
             <option value="female">زن</option>
           </select>
+          {!!errors?.gender && (
+            <span className="">{errors?.gender?.message}</span>
+          )}
         </div>
       </div>
       <div className="flex justify-between gap-4 *:flex-1 *:p-2 *:rounded-[5px] text-base font-[yekan] font-[600] leading-[24.8px]">
